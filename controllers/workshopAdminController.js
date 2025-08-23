@@ -1,12 +1,48 @@
 const vehicles =require('../models/vehicle')
 
 
+const getDashboard = async (req, res) => {
+  try {
+  
+    const serviceManagers = 1;
+    const technicians = 7;
+    const clients = 78;
+    const completedJobcards = 23;
+    const pendingJobcards = 7;
+    const revenue = 390000;
+    const monthlyRevenue = 20000;
+      
+    
+    const stats = {  
+      revenue,
+      completedJobcards,
+      pendingJobcards,
+      serviceManagers,
+      technicians,
+      clients,
+      monthlyRevenue
+    };
+
+    const user = {
+    name: req.user.name,
+    email: req.user.email,
+    role: "workshopadmin"
+  };
+
+    res.render("workshopadmin/dashboard", { stats,title: "dashboard",user,activePage: "dashboard"});
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error loading dashboard");
+  }
+};
+
+
 const addVehicle = async (req,res)=>{
     try{
         const {brand, model, type} =req.body;
 
         if(!brand || !model || !type){
-            return res.status(400).send({ message: "All fields required" })
+            return res.status(400).json({ success: false, message: "All fields are required" });
         }
         const existingVehicle = await vehicles.findOne({
       brand,
@@ -16,38 +52,52 @@ const addVehicle = async (req,res)=>{
     });
 
     if (existingVehicle) {
-      return res.status(400).json({ message: "Vehicle already exists for this workshop" });
+      return res.status(400).json({success: false,message: "Vehicle already exists for this workshop"});
     }
-        // await vehicles.create({
-        //     brand,
-        //     model,
-        //     type,
-        //     workshopAdmin: req.user.id
-        // });
+      
         const vehicle = new vehicles({
             brand,
             model,
             type,
-            workshopAdmin: req.user.id   // from JWT
+            workshopAdmin: req.user.id   
         });
 
         await vehicle.save();
-        res.status(201).json(vehicle);
+        res.status(201).json({
+      success: true,
+      message: "Vehicle added successfully",
+      data: vehicle
+    });
 
         
     }catch(err){
-        res.status(500).json({ message: err.message +"hii"});
+        res.status(500).json({ success: false, message: err.message });
 
     }
 }
 
 const getVehicles = async (req,res)=>{
     try{
-        const vehicle =await vehicles.find({workshopAdmin:req.user.id});
-        res.status(200).send(vehicle)
+        const vehicleList =await vehicles.find({workshopAdmin:req.user.id});
+        // if(vehicleList.length === 0){
+        //     return res.status(404).json({ success: false, message: "vehicle not found" });
+        // }
+         const user = {
+    name: req.user.name,
+    email: req.user.email,
+    role: "workshopadmin"
+  };
+      
+        
+    //     res.status(200).json({
+    //   success: true,
+    //   count: vehicleList.length,
+    //   data: vehicleList
+    // });
+    res.render("workshopadmin/managevehicles", { vehicles: vehicleList,title: "Manage vehicles",user,activePage: "vehicles" });
 
     }catch(err){
-        res.status(500).send({message: err.message});
+        res.status(500).json({ success: false, message: err.message });
 
     }
 }
@@ -63,11 +113,15 @@ const updateVehicle = async (req, res) => {
             { new: true }
         );
 
-        if (!vehicle) return res.status(404).json({ message: "Vehicle not found" });
+        if (!vehicle) return res.status(404).json({ success: false, message: "Vehicle not found" });
 
-        res.json(vehicle);
+        res.json({
+      success: true,
+      message: "Vehicle updated successfully",
+      data: vehicle
+    });
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        res.status(500).json({ success: false, message: err.message });
     }
 };
 
@@ -77,13 +131,18 @@ const deleteVehicle = async (req, res) => {
 
         const vehicle = await vehicles.findOneAndDelete({ _id: id, workshopAdmin: req.user.id });
 
-        if (!vehicle) return res.status(404).json({ message: "Vehicle not found" });
+    if (!vehicle) {
+      return res.status(404).json({ success: false, message: "Vehicle not found" });
+    }
 
-        res.json({ message: "Vehicle deleted" });
+        res.json({
+      success: true,
+      message: "Vehicle deleted successfully"
+    });
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        res.status(500).json({ success: false, message: err.message });
     }
 };
 
-module.exports ={addVehicle,getVehicles,updateVehicle,deleteVehicle};
+module.exports ={getDashboard,addVehicle,getVehicles,updateVehicle,deleteVehicle};
 

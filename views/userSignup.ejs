@@ -123,7 +123,7 @@
   form.addEventListener("submit", function(event) {
     let valid = true;
 
-    // Clear old errors
+   
     ownerError.textContent = "";
     emailError.textContent = "";
     workshopError.textContent = "";
@@ -132,13 +132,13 @@
     stateError.textContent = "";
     passwordError.textContent = "";
 
-    // Owner Name
+   
     if (!ownername.value.trim()) {
       ownerError.textContent = "Owner name is required";
       valid = false;
     }
 
-    // Email
+    
     if (!email.value.trim()) {
       emailError.textContent = "Email is required";
       valid = false;
@@ -147,13 +147,12 @@
       valid = false;
     }
 
-    // Workshop Name
+    
     if (!name.value.trim()) {
       workshopError.textContent = "Workshop name is required";
       valid = false;
     }
 
-    // Contact Number
     if (!phone.value.trim()) {
       contactError.textContent = "Contact number is required";
       valid = false;
@@ -162,19 +161,19 @@
       valid = false;
     }
 
-    // City
+    
     if (!city.value.trim()) {
       cityError.textContent = "City is required";
       valid = false;
     }
 
-    // State
+   
     if (!state.value.trim()) {
       stateError.textContent = "State is required";
       valid = false;
     }
 
-    // Password
+    
     if (!password.value.trim()) {
       passwordError.textContent = "Password is required";
       valid = false;

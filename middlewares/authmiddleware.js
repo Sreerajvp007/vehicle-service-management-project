@@ -17,14 +17,14 @@ if (!authHeader) {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // 3. Add user info to request
+    
     req.user = decoded;
-    console.log(decoded)
+    
 
-   if(req.user.role !== "superadmin"){
-return res.status(403).json({ message: "get out users" });
+//    if(req.user.role !== "superadmin"){
+// return res.status(403).json({ message: "get out users" });
       
-   }
+//    }
     next();
   } catch (err) {
     return res.status(403).json({ message: "Invalid or expired token" });

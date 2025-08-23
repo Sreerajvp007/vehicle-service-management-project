@@ -1,50 +1,69 @@
-const bcrypt =require('bcrypt');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const superAdmin =require('../models/superadmin');
-const users =require('../models/user');
-const workshops =require('../models/workshop');
+const superAdmin = require('../models/superadmin');
+const users = require('../models/user');
+const workshops = require('../models/workshop');
 
-const showloginPageSuper =  (req,res)=>{
-  res.render("superadminlogin");
-  // res.send("hello");
+const showloginPageSuper = (req, res) => {
+  res.render("superadminlogin",{ title: "Signup", layout: false });
+
 }
-const loginSuperAdmin =async (req,res)=>{
-    const {email,password} =req.body;
-    if(!email || !password){
-        return res.status(400).send("please fill all fields");
+const loginSuperAdmin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: "Please fill all fields" });
     }
     const admin = await superAdmin.findOne({ email });
 
-    if (!admin){
-        return res.status(400).send({ error: "Invalid email" });
-    } 
-    const passwordCheck = await bcrypt.compare(password, admin.password);
-    if (!passwordCheck){
-        return res.status(400).send({ error: "Invalid password" });
-
-    } 
-    const token = jwt.sign({ id: admin._id, role: "superadmin", email,name: admin.name }, process.env.JWT_SECRET, { expiresIn: "50m" });
-    const bearerToken = "Bearer " + token
-    res.cookie("token",bearerToken, { httpOnly: true});
-    res.status(200).send(bearerToken);
-   
-}
-
-const showSignupPage = async (req,res)=>{
-  res.render("userSignup");
-}
-const signupUser =async (req,res)=>{
-  console.log("Signup Data:", req.body);
-    const {email, password, ownername, name, phone, city, state } = req.body;
-    if(!email || !password || !ownername || !name || !phone || !city ||!state){
-        return res.status(400).send("please fill all fields")
+    if (!admin) {
+      return res.status(400).json({ success: false, message: "Invalid email" });
     }
-    const existingWorkshop = await workshops.findOne({email});
+    const passwordCheck = await bcrypt.compare(password, admin.password);
+    if (!passwordCheck) {
+      return res.status(400).json({ success: false, message: "Invalid password" });
+
+    }
+    const token = jwt.sign({ id: admin._id, role: "superadmin", email, name: admin.name }, process.env.JWT_SECRET, { expiresIn: "50m" });
+    const bearerToken = "Bearer " + token
+    res.cookie("token", bearerToken, { httpOnly: true });
+
+    // res.status(200).json({
+    //   success: true,
+    //   message: "SuperAdmin login successful",
+    //   token,
+    //   data: { email: admin.email, role: "superadmin" }
+    // });
+
+    res.redirect("dashboard")
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+
+
+}
+
+const showSignupPage = async (req, res) => {
+try{
+    console.log("yess")
+  res.render("userSignup",{ title: "Signup", layout: false });
+}catch(err){
+  console.log(err)
+}
+}
+const signupUser = async (req, res) => {
+  try {
+    // console.log("Signup Data:", req.body);
+    const { email, password, ownername, name, phone, city, state } = req.body;
+    if (!email || !password || !ownername || !name || !phone || !city || !state) {
+      return res.status(400).json({ success: false, message: "Please fill all fields" });
+    }
+    const existingWorkshop = await workshops.findOne({ email });
     if (existingWorkshop) {
-    return res.status(400).send({ error: "Email already registered" });
+      return res.status(400).json({ success: false, message: "Email already registered" });
     }
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password,salt);
+    const hashedPassword = await bcrypt.hash(password, salt);
     const newWorkshop = new workshops({
       email,
       password: hashedPassword,
@@ -56,64 +75,88 @@ const signupUser =async (req,res)=>{
     });
 
     await newWorkshop.save();
-    res.status(201).send({ success: "workshop Signup successful. Please login." });
+    res.status(201).json({
+      success: true,
+      message: "Workshop signup successful. Please login.",
+      data: { email: newWorkshop.email, role: newWorkshop.role }
+    });
+
+
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Error signing up" });
+  }
 }
 
-const showloginPage = async (req,res)=>{
-  res.render("userlogin");
+const showloginPage = async (req, res) => {
+  res.render("userlogin", { title: "Login", layout: false });
 }
-const loginUser =async (req,res)=>{
+const loginUser = async (req, res) => {
+  try {
     const { email, password } = req.body;
-     console.log("Form Data:", req.body);
-    if(!email || !password){
-        return res.status(400).send("please fill all fields");
+    // console.log("Form Data:", req.body);
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: "Please fill all fields" });
     }
     let user = await users.findOne({ email });
     if (!user) {
-        user = await workshops.findOne({ email });
+      user = await workshops.findOne({ email });
     }
 
-    if (!user){
-        return res.status(400).send({ error: "Invalid email" });
-    } 
+    if (!user) {
+      return res.status(400).json({ success: false, message: "Invalid email" });
+    }
     const passwordCheck = await bcrypt.compare(password, user.password);
-    if (!passwordCheck){
-        return res.status(400).send({ error: "Invalid password" });
+    if (!passwordCheck) {
+      return res.status(400).json({ success: false, message: "Invalid password" });
 
-    } 
-    const token = jwt.sign({ id: user._id,role: user.role, email, name: user.name }, process.env.JWT_SECRET, { expiresIn: "50m" });
+    }
+    const token = jwt.sign({ id: user._id, role: user.role, email, name: user.name }, process.env.JWT_SECRET, { expiresIn: "50m" });
     const bearerToken = "Bearer " + token
-    res.cookie("token",bearerToken, { httpOnly: true});
+    res.cookie("token", bearerToken, { httpOnly: true });
 
 
 
-      
-    
 
-    if (user.role === "workshopadmin"){
-        res.status(200).send("login success workshop admin hii" +bearerToken);
-    }else{
-       res.status(200).send("login success workshop admin hii" +bearerToken);
-    } 
-    
+
+
+    if (user.role === "workshopadmin") {
+
+      res.redirect(`/${user.role}/vehicle`)
+    } else {
+
+      res.status(200).json({
+        success: true,
+        message: "Login successful",
+        token,
+        data: {
+          id: user._id,
+          email: user.email,
+          role: user.role
+        }
+      });
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+
 }
 
 const logoutSuperAdmin = async (req, res) => {
   try {
     res.clearCookie("token", { httpOnly: true });
-    return res.status(200).send({ success: "SuperAdmin logged out successfully" });
+    return res.status(200).json({ success: true, message: "SuperAdmin logged out successfully" });
   } catch (err) {
-    return res.status(500).send({ error: "Logout failed" });
+    return res.status(500).json({ success: false, message: "Logout failed" });
   }
 };
 
 const logoutUser = async (req, res) => {
   try {
     res.clearCookie("token", { httpOnly: true });
-    return res.status(200).send({ success: "User logged out successfully" });
+    return res.status(200).json({ success: true, message: "User logged out successfully" });
   } catch (err) {
-    return res.status(500).send({ error: "Logout failed" });
+    return res.status(500).json({ success: false, message: "Logout failed" });
   }
 };
 
-module.exports ={loginSuperAdmin,showloginPageSuper,signupUser,loginUser,logoutSuperAdmin,logoutUser,showloginPage,showSignupPage,};
+module.exports = { loginSuperAdmin, showloginPageSuper, signupUser, loginUser, logoutSuperAdmin, logoutUser, showloginPage, showSignupPage, };

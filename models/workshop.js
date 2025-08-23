@@ -9,12 +9,14 @@ const workshopSchema =mongoose.Schema({
     phone:{type:String,required:true},
     role: {
         type: String,
-        default: 'workshopadmin'   // 👈 always defaults to this
+        default: 'workshopadmin'   
     },
+    // isBlocked:{type:Boolean,default:false},
+    // isApproved:{type:Boolean,default:false},
     status: {
-        type: [String],  // Array of strings
-        enum: ['pending', 'approved', 'blocked'], // allowed values
-        default: ['pending']  // default value
+        type: String,  
+        enum: ['pending', 'approved', 'blocked'], 
+        default: 'pending' 
     }
 
 },{ timestamps: true });

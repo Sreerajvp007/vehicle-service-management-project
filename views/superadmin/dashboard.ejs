@@ -1,24 +1,169 @@
 <div class="container-fluid">
+
   <div class="row g-3 mb-4">
     <div class="col-md-4">
       <div class="card shadow-sm p-3">
-        <h3><%= stats.workshops %></h3>
+        <h3>
+          <%= stats.workshops %>
+        </h3>
         <small>Total Workshops</small>
       </div>
     </div>
 
-    <div class="col-md-4">
+    <!-- <div class="col-md-4">
       <div class="card shadow-sm p-3">
         <h3><%= stats.revenue %></h3>
         <small>Service Revenue</small>
       </div>
-    </div>
+    </div> -->
 
     <div class="col-md-4">
       <div class="card shadow-sm p-3">
-        <h3><%= stats.approvals %></h3>
+        <h3>
+          <%= stats.approvals %>
+        </h3>
         <small>Pending Approvals</small>
       </div>
     </div>
   </div>
+
+  <div class="card shadow-sm p-3 mb-4">
+    <h5 class="mb-3">Workshop Approvals</h5>
+    <% approvals.forEach(workshop=> { %>
+      <div class="d-flex justify-content-between align-items-center border rounded p-2 mb-2">
+        <div>
+          <strong>
+            <%= workshop.name %>
+          </strong><br>
+          <small>
+            <%= workshop.city %>, <%= workshop.state %>
+          </small>
+        </div>
+        <div>
+          <button class="btn btn-success btn-sm approve-btn" data-id="<%= workshop._id %>">Approve</button>
+          <button class="btn btn-danger btn-sm reject-btn" data-id="<%= workshop._id %>">Reject</button>
+
+        </div>
+      </div>
+      <% }) %>
+  </div>
+
+  
+  <div class="card shadow-sm p-3">
+    <h5 class="mb-3">Revenue by Location</h5>
+    <canvas id="revenueChart"></canvas>
+  </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+  document.addEventListener("DOMContentLoaded", () => {
+    
+
+    document.querySelectorAll(".approve-btn").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const id = btn.getAttribute("data-id");
+        const res = await fetch(`/superadmin/workshops/${id}/approve`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" }
+        });
+        const data = await res.json();
+        if (data.success) {
+          
+          btn.closest(".d-flex").remove();
+        } else {
+          alert("Error approving workshop");
+        }
+      });
+    });
+  
+    document.querySelectorAll(".reject-btn").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const id = btn.getAttribute("data-id");
+
+        Swal.fire({
+          title: "Are you sure?",
+          text: "This workshop will be permanently deleted.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#3085d6",
+          confirmButtonText: "Yes, reject it!",
+          cancelButtonText: "Cancel"
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              const res = await fetch(`/superadmin/workshops/${id}`, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" }
+              });
+              const data = await res.json();
+
+              if (data.success) {
+               
+                btn.closest(".d-flex").remove();
+
+                Swal.fire("Deleted!", "Workshop has been rejected.", "success");
+              } else {
+                Swal.fire("Error", data.message || "Error rejecting workshop", "error");
+              }
+            } catch (err) {
+              console.error("Reject request failed:", err);
+              Swal.fire("Error", "Network error while rejecting workshop", "error");
+            }
+          }
+        });
+      });
+    });
+  });
+
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
+ 
+    const confirmLogout = await Swal.fire({
+      title: "Are you sure?",
+      text: "You will be logged out of your account.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, log out"
+    });
+
+    if (confirmLogout.isConfirmed) {
+      try {
+        const response = await fetch("/superadmin/logout", {
+          method: "POST",
+          credentials: "include" 
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          
+          Swal.fire({
+            icon: "success",
+            title: "Logged out",
+            text: result.message,
+            timer: 1500,
+            showConfirmButton: false
+          }).then(() => {
+            window.location.href = "/superadmin/login";
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: result.message
+          });
+        }
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Logout failed",
+          text: "Something went wrong!"
+        });
+      }
+    }
+  });
+</script>

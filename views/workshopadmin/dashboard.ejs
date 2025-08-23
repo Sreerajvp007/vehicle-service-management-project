@@ -1,0 +1,106 @@
+
+<div class="container-fluid">
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="card shadow-sm p-3 text-center">
+        <h3><%= stats.revenue %></h3>
+        <small>Total Revenue</small>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow-sm p-3 text-center">
+        <h3><%= stats.completedJobcards %></h3>
+        <small>Jobcards Completed Today</small>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow-sm p-3 text-center">
+        <h3><%= stats.pendingJobcards %></h3>
+        <small>Pending Jobcards</small>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow-sm p-3 text-center">
+        <h3><%= stats.serviceManagers %></h3>
+        <small>Service Managers</small>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow-sm p-3 text-center">
+        <h3><%= stats.technicians %></h3>
+        <small>Technicians</small>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow-sm p-3 text-center">
+        <h3><%= stats.clients %></h3>
+        <small>Clients</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm p-3">
+    <h5 class="mb-3">Revenue per Month</h5>
+    <canvas id="myChart" height="120"></canvas>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- <script>
+    let myChart;
+
+function renderRevenueChart() {
+  const ctx = document.getElementById("myChart").getContext("2d");
+
+  if (myChart) myChart.destroy();
+
+  myChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: [
+        "January", "February", "March", "April",
+        "May", "June", "July", "August", "September"
+      ],
+      datasets: [
+        {
+          label: "Revenue",
+          data: [80000, 67000, 60000, 50000, 42000, 36000, 30000, 23000, 12000], 
+          backgroundColor: "rgba(54, 162, 235, 0.7)",
+          borderRadius: 6
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function(value) {
+              return "$" + value.toLocaleString();
+            }
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          display: true,
+          position: "top"
+        },
+        title: {
+          display: true,
+          text: "Month wise analytics"
+        }
+      }
+    }
+  });
+}
+
+// renderRevenueChart();
+
+</script> -->

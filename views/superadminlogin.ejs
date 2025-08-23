@@ -99,7 +99,7 @@
         valid = false;
       }
 
-      // Password validation
+      
       const passwordValue = passwordInput.value.trim();
       if (!passwordValue) {
         passwordError.textContent = "Password is required";
@@ -110,7 +110,7 @@
       }
 
       if (!valid) {
-        event.preventDefault(); // stop form submit
+        event.preventDefault(); 
       }
     });
   </script>

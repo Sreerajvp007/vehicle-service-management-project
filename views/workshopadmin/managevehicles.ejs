@@ -1,0 +1,201 @@
+
+
+<div class="container mt-4">
+  <h2 class="mb-3">Manage Vehicles</h2>
+
+  
+  <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addVehicleModal">
+    + Add Vehicle
+  </button>
+
+  
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Brand</th>
+        <th>Model</th>
+        <th>Type</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% vehicles.forEach(vehicle => { %>
+        <tr id="row-<%= vehicle._id %>">
+          <td><%= vehicle.brand %></td>
+          <td><%= vehicle.model %></td>
+          <td><%= vehicle.type %></td>
+          <td>
+            <button class="btn btn-sm btn-warning editBtn" data-id="<%= vehicle._id %>" data-brand="<%= vehicle.brand %>" data-model="<%= vehicle.model %>" data-type="<%= vehicle.type %>">Edit</button>
+            <button class="btn btn-sm btn-danger deleteBtn" data-id="<%= vehicle._id %>">Delete</button>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+
+<div class="modal fade" id="addVehicleModal" tabindex="-1">
+  <div class="modal-dialog">
+    <form id="addVehicleForm" class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Vehicle</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-2">
+          <label>Brand</label>
+          <input type="text" name="brand" class="form-control" required>
+        </div>
+        <div class="mb-2">
+          <label>Model</label>
+          <input type="text" name="model" class="form-control" required>
+        </div>
+        <div class="mb-2">
+          <label>Type</label>
+          <input type="text" name="type" class="form-control" required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" type="submit">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<div class="modal fade" id="editVehicleModal" tabindex="-1">
+  <div class="modal-dialog">
+    <form id="editVehicleForm" class="modal-content">
+      <input type="hidden" name="id" id="editVehicleId">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Vehicle</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-2">
+          <label>Brand</label>
+          <input type="text" name="brand" id="editBrand" class="form-control" required>
+        </div>
+        <div class="mb-2">
+          <label>Model</label>
+          <input type="text" name="model" id="editModel" class="form-control" required>
+        </div>
+        <div class="mb-2">
+          <label>Type</label>
+          <input type="text" name="type" id="editType" class="form-control" required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-success" type="submit">Update</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  
+  document.getElementById("addVehicleForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData);
+
+    const res = await fetch("/workshopadmin/vehicle", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+    const result = await res.json();
+
+    if (result.success) {
+      Swal.fire("Added!", result.message, "success").then(() => location.reload());
+    } else {
+      Swal.fire("Error!", result.message, "error");
+    }
+  });
+
+  
+  document.querySelectorAll(".editBtn").forEach(btn => {
+    btn.addEventListener("click", function() {
+      document.getElementById("editVehicleId").value = this.dataset.id;
+      document.getElementById("editBrand").value = this.dataset.brand;
+      document.getElementById("editModel").value = this.dataset.model;
+      document.getElementById("editType").value = this.dataset.type;
+      new bootstrap.Modal(document.getElementById("editVehicleModal")).show();
+    });
+  });
+
+  
+  document.getElementById("editVehicleForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const id = document.getElementById("editVehicleId").value;
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData);
+
+    const res = await fetch(`/workshopadmin/vehicle/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+    const result = await res.json();
+
+    if (result.success) {
+      Swal.fire("Updated!", result.message, "success").then(() => location.reload());
+    } else {
+      Swal.fire("Error!", result.message, "error");
+    }
+  });
+
+  
+  document.querySelectorAll(".deleteBtn").forEach(btn => {
+    btn.addEventListener("click", function() {
+      const id = this.dataset.id;
+      Swal.fire({
+        title: "Are you sure?",
+        text: "This vehicle will be deleted!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!"
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const res = await fetch(`/workshopadmin/vehicle/${id}`, { method: "DELETE" });
+          const data = await res.json();
+          if (data.success) {
+            Swal.fire("Deleted!", data.message, "success").then(() => location.reload());
+          } else {
+            Swal.fire("Error!", data.message, "error");
+          }
+        }
+      });
+    });
+  });
+
+ 
+ document.getElementById("logoutBtn")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You will be logged out.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, logout",
+    cancelButtonText: "Cancel"
+  }).then(async result => {
+    if (result.isConfirmed) {
+      const res = await fetch("/user/logout", { method: "POST" });
+      const data = await res.json();
+
+      if (data.success) {
+        window.location.href = "/user/login";
+      } else {
+        Swal.fire("Error", data.message, "error");
+      }
+    }
+  });
+});
+
+</script>
+
