@@ -25,12 +25,17 @@ const checkPrivilege = (allowedRoles = []) => {
             phone:workshop.phone
 
           }
-          return res.render("waiting",{user, layout: false})
+          return res.render("waiting",{user,title: "dashboard",activePage: "dashboard"})
         
         }
         if (workshop.status =="blocked") {
+          const user ={
+            email:workshop.email,
+            phone:workshop.phone
+
+          }
           // return res.status(403).json({ message: "Your account is blocked. Contact admin." });
-          return res.render("blocked",{layout: false})
+          return res.render("blocked",{user,title: "dashboard",activePage: "dashboard"})
         }
       }
 

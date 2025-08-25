@@ -50,6 +50,31 @@
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+   
+ document.getElementById("logoutBtn")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You will be logged out.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, logout",
+    cancelButtonText: "Cancel"
+  }).then(async result => {
+    if (result.isConfirmed) {
+      const res = await fetch("/user/logout", { method: "POST" });
+      const data = await res.json();
+
+      if (data.success) {
+        window.location.href = "/user/login";
+      } else {
+        Swal.fire("Error", data.message, "error");
+      }
+    }
+  });
+});
+</script>
 <!-- <script>
     let myChart;
 

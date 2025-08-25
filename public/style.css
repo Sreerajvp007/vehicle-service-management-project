@@ -187,3 +187,90 @@ h1 {
 .modal-footer .btn {
   border-radius: 6px;
 }
+
+
+/*  */
+
+
+/* Desktop sidebar */
+.sidebar {
+  min-height: 100vh;
+  width: 250px;
+  background-color: #ffffff;
+  box-shadow: 0 0 15px rgba(0,0,0,0.05);
+  border-right: 1px solid #eee;
+}
+
+/* Mobile sidebar inside Offcanvas */
+.offcanvas .sidebar {
+  width: 100% !important;       /* ✅ take full offcanvas width */
+  min-height: 100%;             /* fill offcanvas height */
+  box-shadow: none !important;  /* remove desktop shadow */
+  border: none !important;      /* remove border */
+  background-color: #ffffff;    /* unify background */
+  padding: 1rem;                /* optional: inner spacing */
+}
+
+
+/* Default layout for action buttons */
+.action-buttons {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+}
+
+/* Medium screens (820px–1150px): buttons wrap */
+@media (max-width: 1150px) {
+  .action-buttons {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .action-buttons .btn {
+    flex: 1 1 45%;   /* two per row */
+    min-width: 100px;
+  }
+}
+
+
+/*  */
+@media (max-width: 768px) {
+  .vehicle-table,
+  .vehicle-table thead,
+  .vehicle-table tbody,
+  .vehicle-table th,
+  .vehicle-table td,
+  .vehicle-table tr {
+    display: block;
+    width: 100%;
+  }
+
+  .vehicle-table tr {
+    margin-bottom: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    padding: 0.75rem;
+    background: #fff;
+  }
+
+  .vehicle-table td {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    border: none;
+    border-bottom: 1px solid #eee;
+  }
+
+  .vehicle-table td:last-child {
+    border-bottom: none;
+  }
+
+  .vehicle-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #495057;
+  }
+}
+
+
