@@ -75,11 +75,12 @@ const signupUser = async (req, res) => {
     });
 
     await newWorkshop.save();
-    res.status(201).json({
-      success: true,
-      message: "Workshop signup successful. Please login.",
-      data: { email: newWorkshop.email, role: newWorkshop.role }
-    });
+    res.redirect("login")
+    // res.status(201).json({
+    //   success: true,
+    //   message: "Workshop signup successful. Please login.",
+    //   data: { email: newWorkshop.email, role: newWorkshop.role }
+    // });
 
 
   } catch (err) {

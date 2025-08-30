@@ -94,7 +94,7 @@ const getVehicles = async (req,res)=>{
     //   count: vehicleList.length,
     //   data: vehicleList
     // });
-    res.render("workshopadmin/managevehicles", { vehicles: vehicleList,title: "Manage vehicles",user,activePage: "vehicles" });
+    res.render("workshopadmin/managevehicles", { vehicles: vehicleList,title: "Manage vehicles",user,activePage: "vehicle" });
 
     }catch(err){
         res.status(500).json({ success: false, message: err.message });

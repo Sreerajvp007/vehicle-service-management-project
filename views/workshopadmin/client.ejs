@@ -1,0 +1,57 @@
+<div class="container py-4">
+  <h2 class="mb-2">Client Management</h2>
+  <p class="text-muted mb-4">Streamline your client relationships and service history efficiently.</p>
+
+  <!-- Search & Filter -->
+  <div class="d-flex mb-4">
+    <input type="text" class="form-control me-2" placeholder="Search by client name, phone, or vehicle number..">
+    <button class="btn btn-outline-secondary">Filter</button>
+  </div>
+
+  <!-- Client Cards -->
+  <div class="row g-4">
+    <% clients.forEach(client => { %>
+      <div class="col-md-4">
+        <div class="card shadow-sm p-3 h-100">
+          <h5><%= client.clientname %></h5>
+          <small class="text-muted"><%= client.phone %></small>
+          <hr>
+          <p><%= client.vehicles %> Vehicle(s)</p>
+          <p><%= client.services %> Services</p>
+          <p>Last Visit: <%= new Date(client.lastVisit).toLocaleDateString() %></p>
+          <a href="/workshopadmin/client/history/<%= client.phone %>" class="btn btn-primary mt-auto">View Service History</a>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</div>
+
+
+<script>
+
+
+ 
+ document.getElementById("logoutBtn")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You will be logged out.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, logout",
+    cancelButtonText: "Cancel"
+  }).then(async result => {
+    if (result.isConfirmed) {
+      const res = await fetch("/user/logout", { method: "POST" });
+      const data = await res.json();
+
+      if (data.success) {
+        window.location.href = "/user/login";
+      } else {
+        Swal.fire("Error", data.message, "error");
+      }
+    }
+  });
+});
+
+</script>

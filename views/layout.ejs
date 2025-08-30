@@ -12,12 +12,12 @@
 <body class="bg-light">
 
   <div class="d-flex">
-    <!-- ✅ Sidebar (desktop) -->
+    <!-- Sidebar (desktop) -->
     <div class="d-none d-lg-block">
       <%- include('partials/sidebar', { user: user, activePage: activePage }) %>
     </div>
 
-    <!-- ✅ Page Content -->
+    <!-- Page Content -->
     <div class="flex-grow-1 d-flex flex-column min-vh-100">
       
       <%- include('partials/header', { user: user }) %>
@@ -30,7 +30,7 @@
     </div>
   </div>
 
-  <!-- ✅ Offcanvas Sidebar (mobile) -->
+  <!-- Offcanvas Sidebar (mobile) -->
   <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebar">
     <div class="offcanvas-header">
       <h5 class="offcanvas-title">Menu</h5>

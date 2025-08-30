@@ -1,3 +1,5 @@
+const dotenv =require('dotenv');
+dotenv.config();
 const express =require('express');
 const path = require("path");
 const cors =require('cors');
@@ -5,12 +7,12 @@ const fs = require("fs");
 const ejs = require("ejs");
 const expressLayouts = require("express-ejs-layouts");
 const cookieParser = require('cookie-parser');
-const dotenv =require('dotenv');
+
 const connectDB =require('./config/db');
 const superadminRoute =require('./routes/superAdminRoute');
 const userAuthRoute =require('./routes/useAuthRoute');
 const workshopadminRoute =require('./routes/workshopAdminRoute')
-dotenv.config();
+
 const app=express();
 const port=process.env.PORT
 app.use(express.static(path.join(__dirname, "public")));

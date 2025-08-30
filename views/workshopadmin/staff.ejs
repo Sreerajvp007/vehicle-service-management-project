@@ -1,0 +1,337 @@
+<div class="container my-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3>Manage Staff</h3>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStaffModal">
+      <i class="bi bi-plus"></i> Add New Staff
+    </button>
+  </div>
+
+  <!-- Search + Filter -->
+  <!-- <div class="row mb-3">
+    <div class="col-md-6 mb-2 d-flex gap-2">
+      <input type="text" class="form-control" placeholder="Search staff...">
+      <button class="btn btn-secondary  "><i class="bi bi-search"></i></button>
+    </div>
+    <div class="col-md-3 mb-2">
+      <select class="form-select">
+        <option>All Roles</option>
+        <option>Technician</option>
+        <option>Service Manager</option>
+        <option>Billing</option>
+      </select>
+    </div>
+    <div class="col-md-3 mb-2">
+      <button class="btn btn-outline-secondary w-100">Filter</button>
+    </div>
+  </div> -->
+
+
+
+  <!-- Staff Cards -->
+  <div class="row">
+    <% staffList.forEach(staff => { %>
+      <div class="col-md-4 col-lg-3 mb-4">
+        <div class="card shadow-sm h-100 p-3">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="mb-0"><%= staff.name %></h5>
+            <a href="#"
+              class="text-primary edit-btn"
+              data-bs-toggle="modal"
+              data-bs-target="#editStaffModal"
+              data-id="<%= staff._id %>"
+              data-name="<%= staff.name %>"
+              data-email="<%= staff.email %>"
+              data-phone="<%= staff.phone %>"
+              data-experience="<%= staff.experience %>"
+              data-salary="<%= staff.salary %>"
+              data-role="<%= staff.role %>">
+              <i class="bi bi-pencil-square"></i>
+            </a>
+          </div>
+
+          <span class="badge mb-2
+            <% if(staff.role === 'technician'){ %> bg-dark
+            <% } else if(staff.role === 'servicemanager'){ %> bg-info
+            <% } else { %> bg-secondary <% } %>">
+            <%= staff.role %>
+          </span>
+
+          <p class="mb-2"><i class="bi bi-envelope"></i> <%= staff.email %></p>
+          <p class="mb-2"><i class="bi bi-telephone"></i> <%= staff.phone %></p>
+          <p class="mb-2"><i class="bi bi-star"></i> Experience: <%= staff.experience %> yrs</p>
+          <p class="mb-3"><strong>Salary:</strong> ₹<%= staff.salary %> / month</p>
+
+          <button class="btn btn-danger w-100 remove-btn" data-id="<%= staff._id %>">
+            Remove
+          </button>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</div>
+
+
+<div class="modal fade" id="addStaffModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="addStaffForm" class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add New Staff</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label>Name</label>
+          <input type="text" name="name" class="form-control" id="name" required>
+        </div>
+        <div class="mb-3">
+          <label>Email</label>
+          <input type="email" name="email" class="form-control" id="email" required>
+        </div>
+        <div class="mb-3">
+          <label>Phone</label>
+          <input type="text" name="phone" class="form-control" id="phone" required>
+        </div>
+        <div class="mb-3">
+          <label>Experience (years)</label>
+          <input type="number" name="experience" class="form-control" id="experience" required>
+        </div>
+        <div class="mb-3">
+          <label>Salary</label>
+          <input type="number" name="salary" class="form-control" id="salary" required>
+        </div>
+        <div class="mb-3">
+          <label>Role</label>
+          <select name="role" class="form-select" required>
+            <option value="technician">technician</option>
+            <option value="servicemanager">servicemanager</option>
+            <option value="billing">billing</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Add Staff</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<div class="modal fade" id="editStaffModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="editStaffForm" class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Staff</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editStaffId" name="id">
+        <div class="mb-3">
+          <label>Name</label>
+          <input type="text" id="editName" name="name" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label>Email</label>
+          <input type="email" id="editEmail" name="email" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label>Phone</label>
+          <input type="text" id="editPhone" name="phone" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label>Experience (years)</label>
+          <input type="number" id="editExperience" name="experience" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label>Salary</label>
+          <input type="number" id="editSalary" name="salary" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label>Role</label>
+          <select id="editRole" name="role" class="form-select" required>
+            <option value="technician">Technician</option>
+            <option value="servicemanager">Service Manager</option>
+            <option value="billing">Billing</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+
+  document.getElementById('addStaffForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = {
+      name: document.getElementById('name').value,
+      email: document.getElementById('email').value,
+      phone: document.getElementById('phone').value,
+      experience: document.getElementById('experience').value,
+      salary: document.getElementById('salary').value,
+      role: document.querySelector('#addStaffForm select[name="role"]').value
+    };
+
+    try {
+      const response = await fetch('/workshopadmin/staff', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        Swal.fire({
+          title: 'Success!',
+          text: result.message,
+          icon: 'success',
+          confirmButtonText: 'OK'
+        }).then(() => {
+          location.reload();
+        });
+      } else {
+        Swal.fire({
+          title: 'Error!',
+          text: result.message,
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: 'Error!',
+        text: 'Something went wrong. Please try again.',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+    }
+  });
+
+
+  document.querySelectorAll('.edit-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById('editStaffId').value = btn.dataset.id;
+      document.getElementById('editName').value = btn.dataset.name;
+      document.getElementById('editEmail').value = btn.dataset.email;
+      document.getElementById('editPhone').value = btn.dataset.phone;
+      document.getElementById('editExperience').value = btn.dataset.experience;
+      document.getElementById('editSalary').value = btn.dataset.salary;
+      document.getElementById('editRole').value = btn.dataset.role;
+    });
+  });
+
+
+  document.getElementById('editStaffForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = document.getElementById('editStaffId').value;
+    const formData = {
+      name: document.getElementById('editName').value,
+      email: document.getElementById('editEmail').value,
+      phone: document.getElementById('editPhone').value,
+      experience: document.getElementById('editExperience').value,
+      salary: document.getElementById('editSalary').value,
+      role: document.getElementById('editRole').value
+    };
+
+    try {
+      const response = await fetch(`/workshopadmin/staff/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        Swal.fire({
+          title: 'Success!',
+          text: result.message,
+          icon: 'success',
+          confirmButtonText: 'OK'
+        }).then(() => {
+          location.reload();
+        });
+      } else {
+        Swal.fire({
+          title: 'Error!',
+          text: result.message,
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: 'Error!',
+        text: 'Something went wrong. Please try again.',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+    }
+  });
+
+
+  document.querySelectorAll('.remove-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "This staff member will be deleted!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!"
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const res = await fetch(`/workshopadmin/staff/${btn.dataset.id}`, { 
+              method: 'DELETE' 
+            });
+            
+            const data = await res.json();
+            
+            if (data.success) {
+              Swal.fire("Deleted!", data.message, "success").then(() => {
+                location.reload();
+              });
+            } else {
+              Swal.fire("Error!", data.message, "error");
+            }
+          } catch (error) {
+            Swal.fire("Error!", "Something went wrong. Please try again.", "error");
+          }
+        }
+      });
+    });
+  });
+
+   
+ document.getElementById("logoutBtn")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You will be logged out.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, logout",
+    cancelButtonText: "Cancel"
+  }).then(async result => {
+    if (result.isConfirmed) {
+      const res = await fetch("/user/logout", { method: "POST" });
+      const data = await res.json();
+
+      if (data.success) {
+        window.location.href = "/user/login";
+      } else {
+        Swal.fire("Error", data.message, "error");
+      }
+    }
+  });
+});
+
+</script>

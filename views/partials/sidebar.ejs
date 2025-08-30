@@ -33,6 +33,26 @@
           <i class="bi bi-tools me-2"></i> Manage vehicles
         </a>
       </li>
+      <li class="nav-item mb-2">
+        <a href="/workshopadmin/staff" class="nav-link <%= activePage === 'staff' ? 'active' : '' %>">
+          <i class="bi bi-people-fill"></i> Manage staff
+        </a>
+      </li>
+      <li class="nav-item mb-2">
+        <a href="/workshopadmin/jobcard" class="nav-link <%= activePage === 'jobcard' ? 'active' : '' %>">
+          <i class="bi bi-card-list"></i> Jobcards
+        </a>
+      </li>
+      <li class="nav-item mb-2">
+        <a href="/workshopadmin/jobcard/create"  class="nav-link <%= activePage === 'jobcardCreate' ? 'active' : '' %>">
+          <i class="bi bi-plus-square"></i> Create jobcard
+        </a>
+      </li>
+      <li class="nav-item mb-2">
+        <a href="/workshopadmin/client"  class="nav-link <%= activePage === 'client' ? 'active' : '' %>">
+          <i class="bi bi-person-check"></i> Clients
+        </a>
+      </li>
     <% } else if (user.role === "user") { %>
       <li class="nav-item mb-2">
         <a href="/user/dashboard" class="nav-link <%= activePage === 'dashboard' ? 'active' : '' %>">

@@ -1,0 +1,82 @@
+<div class="container my-4">
+  <h3 class="mb-4 text-primary">Service History</h3>
+
+  <% if (serviceHistory.length > 0) { %>
+    <!-- TABLE for Desktop -->
+    <div class="d-none d-md-block">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Vehicle</th>
+            <th>Service Type</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% serviceHistory.forEach(service => { %>
+            <tr>
+              <td><%= new Date(service.dateTimeIn).toLocaleDateString() %></td>
+              <td>
+                <% if (service.vehicle) { %>
+                  <%= service.vehicle.brand %> <%= service.vehicle.model %>
+                <% } else { %>
+                  <%= service.registrationNumber %>
+                <% } %>
+              </td>
+              <td><%= service.serviceType || "-" %></td>
+              <td><%= service.repairStatus %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CARDS for Mobile -->
+    <div class="d-md-none">
+      <% serviceHistory.forEach(service => { %>
+        <div class="card mb-3 shadow-sm">
+          <div class="card-body">
+            <h6 class="card-title text-primary">
+              <%= service.vehicle ? (service.vehicle.brand + " " + service.vehicle.model) : service.registrationNumber %>
+            </h6>
+            <p class="card-text mb-1"><strong>Date:</strong> <%= new Date(service.dateTimeIn).toLocaleDateString() %></p>
+            <p class="card-text mb-1"><strong>Service Type:</strong> <%= service.serviceType || "-" %></p>
+            <p class="card-text"><strong>Status:</strong> <%= service.repairStatus %></p>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <p class="text-muted">No service history available for this client.</p>
+  <% } %>
+
+  <a href="/workshopadmin/client" class="btn btn-secondary mt-3">← Back to Clients</a>
+</div>
+
+
+<script>
+    
+ document.getElementById("logoutBtn")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You will be logged out.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, logout",
+    cancelButtonText: "Cancel"
+  }).then(async result => {
+    if (result.isConfirmed) {
+      const res = await fetch("/user/logout", { method: "POST" });
+      const data = await res.json();
+
+      if (data.success) {
+        window.location.href = "/user/login";
+      } else {
+        Swal.fire("Error", data.message, "error");
+      }
+    }
+  });
+});
+</script>

@@ -1,0 +1,168 @@
+<div class="container my-4">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3>Job Cards</h3>
+      <p class="text-muted mb-0">Manage all service job cards and track progress</p>
+    </div>
+    <a href="/workshopadmin/jobcard/create" class="btn btn-primary">
+      <i class="bi bi-plus"></i> Create Job Card
+    </a>
+  </div>
+
+  <!-- Search -->
+  <div class="row mb-3">
+    <div class="col-md-6 d-flex gap-2">
+      <input type="text" class="form-control" placeholder="Search jobcards...">
+      <button class="btn btn-secondary  "><i class="bi bi-search"></i></button>
+    </div>
+  </div>
+  
+
+  
+  <div class="row mb-4">
+    <div class="col-12 d-flex flex-wrap gap-2">
+      <button class="btn btn-outline-primary active">All</button>
+      <button class="btn btn-outline-warning">Open</button>
+      <button class="btn btn-outline-info">In Progress</button>
+      <button class="btn btn-outline-secondary">On Hold</button>
+      <button class="btn btn-outline-success">Completed</button>
+      <button class="btn btn-outline-primary">Delivered</button>
+      <button class="btn btn-outline-danger">Cancelled</button>
+    </div>
+  </div>
+
+  <!-- Job Cards Grid -->
+  <div class="row">
+    <% if (jobcardList && jobcardList.length > 0) { %>
+      <% jobcardList.forEach(function(job){ %>
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card shadow-sm h-100 p-3">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <h5 class="card-title mb-0 bg-dark text-white badge"><%= job.jobcardNumber %></h5>
+              <span class="badge 
+                <%= job.repairStatus === 'open' ? 'bg-warning text-dark' : '' %>
+                <%= job.repairStatus === 'in-progress' ? 'bg-info' : '' %>
+                <%= job.repairStatus === 'on-hold' ? 'bg-secondary' : '' %>
+                <%= job.repairStatus === 'completed' ? 'bg-success' : '' %>
+                <%= job.repairStatus === 'delivered' ? 'bg-primary' : '' %>
+                <%= job.repairStatus === 'cancelled' ? 'bg-danger' : '' %>">
+                <%= job.repairStatus %>
+              </span>
+              
+            </div>
+
+            <p class="mb-1"><strong>Vehicle:</strong> 
+              <%= job.vehicle ? job.vehicle.brand + " " + job.vehicle.model : "N/A" %>
+            </p>
+            <p class="mb-1"><strong>Customer:</strong> <%= job.clientname %></p>
+            <p class="mb-1"><strong>Service Type:</strong> <%= job.serviceType %></p>
+            <p class="mb-3"><strong>Technician:</strong> 
+              <%= job.assignedTechnician ? job.assignedTechnician.name : "Not Assigned" %>
+            </p>
+             <div class="d-flex justify-content-between mb-2">
+                <a class="btn btn-sm  deleteBtn"
+                  data-id="" href="/workshopadmin/jobcard/edit/<%= job._id %>" target="_blank"><i class="bi bi-pencil-square fs-5 text-primary"></i></a>
+                  <button class="btn btn-sm btn-outline-danger remove-btn"
+                  data-id="<%= job._id %>">Remove</i></button>
+             </div>
+            <a href="/workshopadmin/client/history/<%= job._id %>" class="btn btn-primary w-100">View Details</a>
+            
+            
+          </div>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <div class="col-12">
+        <div class="alert alert-info">No jobs found</div>
+      </div>
+    <% } %>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  document.querySelectorAll('.remove-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "This job card will be deleted permanently!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!"
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            // Show loading indicator
+            Swal.fire({
+              title: 'Deleting...',
+              text: 'Please wait while we delete the job card',
+              allowOutsideClick: false,
+              didOpen: () => {
+                Swal.showLoading();
+              }
+            });
+            
+            const res = await fetch(`/workshopadmin/jobcard/${btn.dataset.id}`, { 
+              method: 'DELETE' 
+            });
+            
+            const data = await res.json();
+            
+            if (res.ok) {
+              Swal.fire({
+                title: "Deleted!",
+                text: data.message || "Job card has been deleted successfully",
+                icon: "success",
+                confirmButtonText: "OK"
+              }).then(() => {
+                location.reload();
+              });
+            } else {
+              Swal.fire({
+                title: "Error!",
+                text: data.message || "Failed to delete job card",
+                icon: "error",
+                confirmButtonText: "OK"
+              });
+            }
+          } catch (error) {
+            Swal.fire({
+              title: "Error!",
+              text: "Something went wrong. Please try again.",
+              icon: "error",
+              confirmButtonText: "OK"
+            });
+          }
+        }
+      });
+    });
+  });
+
+
+   
+ document.getElementById("logoutBtn")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You will be logged out.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, logout",
+    cancelButtonText: "Cancel"
+  }).then(async result => {
+    if (result.isConfirmed) {
+      const res = await fetch("/user/logout", { method: "POST" });
+      const data = await res.json();
+
+      if (data.success) {
+        window.location.href = "/user/login";
+      } else {
+        Swal.fire("Error", data.message, "error");
+      }
+    }
+  });
+});
+
+</script>

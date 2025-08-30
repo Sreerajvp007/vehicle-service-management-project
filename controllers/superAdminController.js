@@ -98,7 +98,7 @@ const editWorkshop = async (req, res) => {
   try {
     const { id } = req.params;
     const { name, ownername, email, phone, city, state } = req.body;
-    const updatedWorkshop = await workshops.findByIdAndUpdate(id, { name, ownername, email, phone, city, state });
+    const updatedWorkshop = await workshops.findByIdAndUpdate(id, { name, ownername, email, phone, city, state },{ new: true });
     if (!updatedWorkshop) {
       return res.status(404).json({ success: false, message: "Workshop not found" });
     }

@@ -2,9 +2,10 @@ const mongoose =require('mongoose');
 const userSchema =mongoose.Schema({
     name:{type:String,required:true},
     email:{type:String,required:true},
-    password:{type:String,required:true},
     phone:{type:String,required:true},
-    workshop: {
+    experience:{type:String,required:true},
+    salary:{type:Number,required:true},
+    workshopId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Workshop',
         required: true

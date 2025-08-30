@@ -3,7 +3,6 @@ const router =express.Router();
 const {loginSuperAdmin,showloginPageSuper,logoutSuperAdmin} =require('../controllers/authController');
 const {getWorkshops,addWorkshop,editWorkshop,deleteWorkshop,approveWorkshop,blockWorkshop,rejectWorkshop,getDashboard,unblockWorkshop} =require('../controllers/superAdminController')
 const authMiddleware =require('../middlewares/authmiddleware');
-// const rollMiddleware =require('../middlewares/rolemiddleware');
 const checkPrivilege =require('../middlewares/checkPrevilegemiddleware');
 router.get('/login',showloginPageSuper);
 router.post('/login',loginSuperAdmin);

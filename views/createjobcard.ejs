@@ -1,0 +1,232 @@
+<form id="jobcardForm" enctype="multipart/form-data" class="p-4 shadow rounded bg-light">
+  <!--  -->
+  <h3 class="mb-4 text-primary">Create Job Card</h3>
+
+  <!-- Client Details -->
+  <fieldset class="border p-3 mb-4">
+    <legend class="w-auto px-2">Client Details</legend>
+    <div class="mb-3">
+      <label>Client Name *</label>
+      <input type="text" name="clientname" class="form-control" required />
+    </div>
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <label>Email</label>
+        <input type="email" name="email" class="form-control" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label>Phone</label>
+        <input type="text" name="phone" class="form-control" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label>City</label>
+        <input type="text" name="city" class="form-control" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label>Post Code</label>
+        <input type="text" name="postcode" class="form-control" />
+      </div>
+      <div class="col-md-6 mb-3">
+        <label>State</label>
+        <input type="text" name="state" class="form-control" />
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- Vehicle Details -->
+  <fieldset class="border p-3 mb-4">
+    <legend class="w-auto px-2">Vehicle Details</legend>
+
+    <!-- Select Vehicle Dropdown -->
+    <div class="mb-3">
+      <label>Select Vehicle *</label>
+      <select name="vehicle" class="form-control" required>
+        <% vehicleList.forEach(v => { %>
+          <option value="<%= v._id %>"><%= v.brand %> - <%= v.model %> (<%= v.type %>)</option>
+        <% }) %>
+      </select>
+    </div>
+
+    <!-- Additional fields (optional if you want to override vehicle details) -->
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <label>Registration Number</label>
+        <input type="text" name="registrationNumber" class="form-control" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label>Year</label>
+        <input type="number" name="year" class="form-control" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label>Mileage</label>
+        <input type="text" name="mileage" class="form-control" />
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- Service Details -->
+  <fieldset class="border p-3 mb-4">
+    <legend class="w-auto px-2">Service Details</legend>
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label>Date Time In *</label>
+        <input type="datetime-local" name="dateTimeIn" class="form-control" required />
+      </div>
+      <div class="col-md-6 mb-3">
+        <label>Date Time Out</label>
+        <input type="datetime-local" name="dateTimeOut" class="form-control" />
+      </div>
+    </div>
+    <div class="mb-3">
+      <label>Service Type</label>
+      <select name="serviceType" class="form-control">
+        <option value="Regular">Regular</option>
+        <option value="Accident Repair">Accident Repair</option>
+        <option value="Maintenance">Maintenance</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label>Reported Defect</label>
+      <textarea name="reportedDefect" class="form-control"></textarea>
+    </div>
+  </fieldset>
+
+  <!-- Damaged Parts -->
+  <fieldset class="border p-3 mb-4">
+    <legend class="w-auto px-2">Damaged Parts</legend>
+    <input type="file" name="damagedParts" class="form-control" multiple />
+  </fieldset>
+
+  <!-- Technician Assignment -->
+  <fieldset class="border p-3 mb-4">
+    <legend class="w-auto px-2">Technician</legend>
+    <div class="mb-3">
+      <label>Assign Technician</label>
+      <select name="assignedTechnician" class="form-control">
+        <% technicianList.forEach(t => { %>
+          <option value="<%= t._id %>"><%= t.name %></option>
+        <% }) %>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label>Special Instructions</label>
+      <textarea name="specialInstructions" class="form-control"></textarea>
+    </div>
+    <!-- <div class="mb-3">
+      <label>Technician Remarks</label>
+      <textarea name="technicianRemarks" class="form-control"></textarea>
+    </div> -->
+  </fieldset>
+
+  <!-- Parts Used -->
+  <!-- <fieldset class="border p-3 mb-4">
+    <legend class="w-auto px-2">Parts Used</legend>
+    <div id="parts-container">
+      <div class="row mb-2">
+        <div class="col-md-2"><input type="text" name="parts[0][partNo]" placeholder="Part No" class="form-control" /></div>
+        <div class="col-md-3"><input type="text" name="parts[0][partDescription]" placeholder="Description" class="form-control" /></div>
+        <div class="col-md-1"><input type="number" name="parts[0][qty]" placeholder="Qty" class="form-control" /></div>
+        <div class="col-md-2"><input type="number" name="parts[0][unitPrice]" placeholder="Unit Price" class="form-control" /></div>
+        <div class="col-md-2"><input type="number" name="parts[0][labour]" placeholder="Labour" class="form-control" /></div>
+        <div class="col-md-2"><input type="number" name="parts[0][lineTotal]" placeholder="Line Total" class="form-control" /></div>
+      </div>
+    </div>
+    <button type="button" class="btn btn-secondary mb-3" onclick="addPart()">+ Add Part</button>
+  </fieldset> -->
+
+  <!-- Repair Status -->
+  <!-- <fieldset class="border p-3 mb-4">
+    <legend class="w-auto px-2">Repair Status</legend>
+    <select name="repairStatus" class="form-control">
+      <option value="open">Open</option>
+      <option value="in-progress">In Progress</option>
+      <option value="on-hold">On Hold</option>
+      <option value="completed">Completed</option>
+      <option value="delivered">Delivered</option>
+    </select>
+  </fieldset> -->
+
+  <button type="submit" class="btn btn-primary">Save Job Card</button>
+</form>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  // Add Part Dynamic Rows (same as before)
+  // let partIndex = 1;
+  // function addPart() {
+  //   const container = document.getElementById('parts-container');
+  //   const row = document.createElement('div');
+  //   row.classList.add('row','mb-2');
+  //   row.innerHTML = `
+  //     <div class="col-md-2"><input type="text" name="parts[${partIndex}][partNo]" placeholder="Part No" class="form-control" /></div>
+  //     <div class="col-md-3"><input type="text" name="parts[${partIndex}][partDescription]" placeholder="Description" class="form-control" /></div>
+  //     <div class="col-md-1"><input type="number" name="parts[${partIndex}][qty]" placeholder="Qty" class="form-control" /></div>
+  //     <div class="col-md-2"><input type="number" name="parts[${partIndex}][unitPrice]" placeholder="Unit Price" class="form-control" /></div>
+  //     <div class="col-md-2"><input type="number" name="parts[${partIndex}][labour]" placeholder="Labour" class="form-control" /></div>
+  //     <div class="col-md-2"><input type="number" name="parts[${partIndex}][lineTotal]" placeholder="Line Total" class="form-control" /></div>
+  //   `;
+  //   container.appendChild(row);
+  //   partIndex++;
+  // }
+document.getElementById("jobcardForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  Swal.fire({
+    title: 'Creating Job Card',
+    text: 'Please wait...',
+    icon: 'info',
+    allowOutsideClick: false,
+    didOpen: () => {
+      Swal.showLoading();
+    }
+  });
+
+  const form = e.target;
+
+  try {
+    const response = await fetch("/workshopadmin/jobcard", {
+      method: "POST",
+      body: new FormData(form)
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      Swal.fire("Success", "Job Card created successfully", "success");
+    } else {
+      Swal.fire("Error", result.message || "Failed to create job card", "error");
+    }
+  } catch (err) {
+    Swal.fire("Error", "Something went wrong", "error");
+  }
+});
+
+
+   
+ document.getElementById("logoutBtn")?.addEventListener("click", function(e) {
+  e.preventDefault();
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You will be logged out.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, logout",
+    cancelButtonText: "Cancel"
+  }).then(async result => {
+    if (result.isConfirmed) {
+      const res = await fetch("/user/logout", { method: "POST" });
+      const data = await res.json();
+
+      if (data.success) {
+        window.location.href = "/user/login";
+      } else {
+        Swal.fire("Error", data.message, "error");
+      }
+    }
+  });
+});
+
+
+</script>
+
