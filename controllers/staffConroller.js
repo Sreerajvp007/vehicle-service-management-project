@@ -2,7 +2,7 @@ const users =require('../models/user')
 const getStaff = async (req,res)=>{
     try{
         const workshop =req.user.id;
-        console.log(workshop)
+        // console.log(workshop)
         const staffList = await users.find({workshopId:workshop});
          const user = {
     name: req.user.name,

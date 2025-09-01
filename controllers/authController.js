@@ -91,6 +91,7 @@ const signupUser = async (req, res) => {
 const showloginPage = async (req, res) => {
   res.render("userlogin", { title: "Login", layout: false });
 }
+
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
